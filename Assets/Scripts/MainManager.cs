@@ -18,10 +18,15 @@ public class MainManager : MonoBehaviour
     
     private bool m_GameOver = false;
 
+    private MainUIHandler mainUIHandler;
+
     
     // Start is called before the first frame update
     void Start()
     {
+        // get the handler script
+        mainUIHandler = GameObject.Find("Canvas").GetComponent<MainUIHandler>();
+
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
         
@@ -71,6 +76,19 @@ public class MainManager : MonoBehaviour
     public void GameOver()
     {
         m_GameOver = true;
+
+        if (m_Points >= DataManager.Instance.highScore)
+        {
+            DataManager.Instance.highScore = m_Points;
+            DataManager.Instance.SaveHighScoreAndPlayerName();
+            mainUIHandler.RefreshHighScoreAndPlayerName();
+        }
+
         GameOverText.SetActive(true);
+    }
+
+    public bool IsGameStart()
+    {
+        return m_Started ? !m_GameOver : false;
     }
 }
